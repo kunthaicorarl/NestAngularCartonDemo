@@ -4,6 +4,7 @@ import { ApiOkResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
+import { Public } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -20,7 +21,8 @@ export class UserController {
   async getUser(@Param('userId') userId: number): Promise<User> {
     return await this.userService.getUser(userId);
   }
-
+   
+  @Public()
   @Post()
   @ApiOkResponse({ status: 201, type: User })
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
