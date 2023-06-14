@@ -42,6 +42,19 @@
           "nullable": false,
           "mappedType": "string"
         },
+        "roles": {
+          "name": "roles",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "user",
+            "admin"
+          ],
+          "mappedType": "array"
+        },
         "profile_image": {
           "name": "profile_image",
           "type": "varchar(255)",

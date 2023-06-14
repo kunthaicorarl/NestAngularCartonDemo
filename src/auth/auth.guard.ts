@@ -10,9 +10,13 @@ import {
   import { jwtConstants } from './constants';
   import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
+import { ROLES_KEY } from './roles.decorator';
+import { Role } from 'src/user/entities/user.entity';
+
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+// export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
   
   @Injectable()
   export class AuthGuard implements CanActivate {
@@ -28,8 +32,18 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
         // 💡 See this condition
         return true;
       }
-  
+
+      const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]);
+      if (!requiredRoles) {
+        return true;
+      }
       const request = context.switchToHttp().getRequest();
+ 
+    
+
       const token = this.extractTokenFromHeader(request);
       if (!token) {
         throw new UnauthorizedException();
@@ -38,6 +52,17 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
         const payload = await this.jwtService.verifyAsync(token, {
           secret: jwtConstants.secret,
         });
+
+      
+        
+        if(!payload)
+        throw new UnauthorizedException();
+
+        var hasPermission=requiredRoles.some((role) => payload.roles?.includes(role));
+        if(!hasPermission)
+        throw new UnauthorizedException();
+
+        
         // 💡 We're assigning the payload to the request object here
         // so that we can access it in our route handlers
         request['user'] = payload;

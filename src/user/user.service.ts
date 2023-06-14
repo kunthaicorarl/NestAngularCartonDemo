@@ -12,7 +12,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async createAdmin(createUserDto: CreateUserDto): Promise<User> {
     const email = createUserDto.email;
     const password=createUserDto.password;
     const saltOrRounds = 10;
@@ -20,7 +20,27 @@ export class UserService {
     const alreadyCreated = await this.userRepository.findOne({ email });
 
     if (!alreadyCreated) {
-      const user = new User(
+      const user =new User().createAdmin(
+        createUserDto.name,
+        createUserDto.email,
+        hashedPassword,
+        createUserDto.profileImage,
+      );
+      await this.userRepository.persistAndFlush(user);
+
+      return user;
+    }
+  }
+
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const email = createUserDto.email;
+    const password=createUserDto.password;
+    const saltOrRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+    const alreadyCreated = await this.userRepository.findOne({ email });
+
+    if (!alreadyCreated) {
+      const user =new User().createUser(
         createUserDto.name,
         createUserDto.email,
         hashedPassword,

@@ -14,8 +14,12 @@ import {
   import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/sign-in-dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from './roles.decorator';
+import { Role } from 'src/user/entities/user.entity';
 
   @Controller('auth')
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard)
   export class AuthController {
     constructor(private authService: AuthService) {}
   
@@ -25,16 +29,15 @@ import { ApiBearerAuth } from '@nestjs/swagger';
     signIn(@Body() signInDto: SignInDto) {
       return this.authService.signIn(signInDto.username, signInDto.password);
     }
+
+    @Roles(Role.Admin)
     @Get('profile')
-    @ApiBearerAuth('access-token')
-    @UseGuards(AuthGuard)
     getProfile(@Request() req) {
       return req.user;
     }
 
+    @Roles(Role.User)
     @Get('test')
-    @ApiBearerAuth('access-token')
-    @UseGuards(AuthGuard)
     getTest(@Request() req) {
       return req.user;
     }
