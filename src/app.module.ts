@@ -6,13 +6,12 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
-import { TodosModule } from './module/todo.module';
 
 
 
 
 @Module({
-  imports: [MikroOrmModule.forRoot(),UserModule, AuthModule],
+  imports: [MikroOrmModule.forRoot(),UserModule,AuthModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_GUARD,
