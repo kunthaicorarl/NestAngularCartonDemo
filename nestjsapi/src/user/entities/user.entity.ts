@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Property, Entity, Unique, PrimaryKey } from '@mikro-orm/core';
+import { Exclude } from 'class-transformer';
 import { IsEmail } from 'class-validator';
 export enum Role {
   User = 'user',
-  Admin = 'admin',
+  Admin = 'admin'
 }
 @Entity()
 export class User {
@@ -34,35 +35,26 @@ export class User {
   @Property({ onUpdate: () => new Date() })
    updatedAt = new Date();
 
-  // constructor(
-  //   name: string,
-  //   email: string,
-  //   password: string,
-  //   profile_image: string,
-  // ) {
-  //   this.name = name;
-  //   this.email = email;
-  //   this.password = password;
-  //   this.profile_image = profile_image;
-  // }
+   @Exclude()
+   @Property({ nullable: true })
+   refresh_token:string;
 
- 
 
   public createAdmin(
     name: string,
     email: string,
     password: string,
     profile_image: string)
-    {
+  {
       this.name = name;
       this.email = email;
       this.password = password;
       this.profile_image = profile_image;
       this.roles=[Role.Admin,Role.User];
       return this;
-    }
+  }
 
-    public createUser(
+  public createUser(
       name: string,
       email: string,
       password: string,
@@ -74,5 +66,5 @@ export class User {
         this.profile_image = profile_image;
         this.roles=[Role.User];
         return this;
-      }
+  }
 }
