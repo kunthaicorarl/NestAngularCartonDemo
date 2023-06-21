@@ -1,26 +1,54 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
-import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
 
-    constructor(
-        private usersService: UserService,
-        private jwtService: JwtService
-      ) {}
+    // constructor(
+    //     private usersService: UserService,
+    //     private jwtService: JwtService,
+    //     private readonly configService: ConfigService,
+    //   ) {}
     
-      async signIn(username, pass) {
-        const user = await this.usersService.findOne(username);
-        if(user==null)   throw new UnauthorizedException();
-        const isMatch = await bcrypt.compare(pass, user?.password);
-        if (!isMatch) {
-          throw new UnauthorizedException();
-        }
-        const payload = { sub: user.id, username: user.email,roles:user.roles };
-        return {
-          access_token: await this.jwtService.signAsync(payload),
-        };
-      }
+    //   // async signIn(username, pass) :Promise<any> {
+    //   //    await this.usersService.signIn(username,pass);
+    //   // }
+
+
+
+    //   hashData(data: string) {
+    //     return argon2.hash(data);
+    //   }
+
+    //   async getTokens(userId: Number, username: string) {
+    //     const [accessToken, refreshToken] = await Promise.all([
+    //       this.jwtService.signAsync(
+    //         {
+    //           sub: userId,
+    //           username,
+    //         },
+    //         {
+    //           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+    //           expiresIn: '15m',
+    //         },
+    //       ),
+    //       this.jwtService.signAsync(
+    //         {
+    //           sub: userId,
+    //           username,
+    //         },
+    //         {
+    //           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+    //           expiresIn: '7d',
+    //         },
+    //       ),
+    //     ]);
+    
+    //     return {
+    //       accessToken,
+    //       refreshToken,
+    //     };
+    //   }
+    //   async logout(id: number) {
+    //           await this.usersService.logout(id);
+    //   }
 
 }

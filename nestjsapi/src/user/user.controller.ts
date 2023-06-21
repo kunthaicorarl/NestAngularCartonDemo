@@ -1,4 +1,14 @@
-import { Controller, Post, Body, Get, Param, UseGuards, BadRequestException } from '@nestjs/common';
+
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards
+} from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -7,6 +17,11 @@ import { Role, User } from './entities/user.entity';
 import { AuthGuard, Public } from 'src/auth/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles.decorator';
+import { SignInDto } from 'src/auth/dtos/sign-in-dto';
+import { Param } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 
 @Controller('user')
 @ApiBearerAuth('access-token')
@@ -32,7 +47,7 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     const alreadyAdmin= await this.userService.findOne(createUserDto.email.toLowerCase().trim());
     if(alreadyAdmin) 
-    throw new BadRequestException({ cause: new Error(), description: 'User already token.' });
+    throw new BadRequestException('User already exists');
     return await this.userService.createAdmin(createUserDto);
   }
 
@@ -44,4 +59,36 @@ export class UserController {
     throw new BadRequestException({ cause: new Error(), description: 'User already token.' });
     return await this.userService.createUser(createUserDto);
   }
+
+  @Public()
+    @HttpCode(HttpStatus.OK)
+    @Post('login')
+    signIn(@Body() signInDto: SignInDto) {
+      return this.userService.login(signInDto.username, signInDto.password);
+    }
+    @UseGuards(AccessTokenGuard)
+    @Roles(Role.Admin)
+    @Get('profile')
+    getProfile(@Request() req) {
+      return req.user;
+    }
+    @UseGuards(AccessTokenGuard)
+    @Get('logout')
+    logout(@Request() req: any) {
+      this.userService.logout(req.user['sub']);
+    }
+    @UseGuards(AccessTokenGuard)
+    @Roles(Role.User)
+    @Get('test')
+    getTest(@Request() req) {
+      return req.user;
+    }
+
+    @UseGuards(RefreshTokenGuard)
+    @Get('refresh')
+    refreshTokens(@Request() req: any) {
+      const userId = req.user['sub'];
+      const refreshToken = req.user['refreshToken'];
+      return this.userService.updateRefreshToken(userId, refreshToken);
+    }
 }

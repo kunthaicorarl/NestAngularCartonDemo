@@ -4,19 +4,14 @@ import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
-
-
+import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { AccessTokenStrategy } from './strategies/accessToken.strategy';
+import { UserService } from 'src/user/user.service';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { User } from 'src/user/entities/user.entity';
 @Module({
-  imports: [
-    UserModule,
-    JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
-    }),
-  ],
-  providers: [AuthService],
+  imports: [JwtModule.register({})],
   controllers: [AuthController],
-  exports: [AuthService],
+  providers: [ AccessTokenStrategy,UserService],
 })
 export class AuthModule {}

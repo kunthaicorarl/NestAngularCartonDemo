@@ -11,11 +11,9 @@ import { AuthGuard } from './auth/auth.guard';
 
 
 @Module({
-  imports: [MikroOrmModule.forRoot(),UserModule,AuthModule],
+  imports: [MikroOrmModule.forRoot(),
+    UserModule],
   controllers: [AppController],
-  providers: [AppService, {
-    provide: APP_GUARD,
-    useClass: AuthGuard,
-  }],
+  providers: [AppService]
 })
 export class AppModule {}

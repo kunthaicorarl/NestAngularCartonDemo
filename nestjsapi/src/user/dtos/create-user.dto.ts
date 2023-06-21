@@ -20,4 +20,9 @@ export class CreateUserDto {
   @IsOptional()
   @ApiProperty()
   profileImage: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  refreshToken:string;
 }

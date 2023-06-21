@@ -35,9 +35,8 @@ export class User {
   @Property({ onUpdate: () => new Date() })
    updatedAt = new Date();
 
-   @Exclude()
    @Property({ nullable: true })
-   refresh_token:string;
+   refreshToken: string;
 
 
   public createAdmin(
@@ -66,5 +65,9 @@ export class User {
         this.profile_image = profile_image;
         this.roles=[Role.User];
         return this;
+  }
+  public updatRefreshToken(refreshToken:string){
+    this.refreshToken=refreshToken;
+  
   }
 }
