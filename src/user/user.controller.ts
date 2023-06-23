@@ -1,16 +1,24 @@
-import { Controller, Post, Body, Get, Param, UseGuards, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserService } from './user.service';
 import { Role, User } from './entities/user.entity';
-import { AuthGuard, Public } from 'src/auth/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Roles } from 'src/auth/roles.decorator';
+import { Public, Roles } from 'src/auth/roles.decorator';
+import { GuardAuthAt } from 'src/auth/guard.auth.at';
 
 @Controller('user')
 @ApiBearerAuth('access-token')
-@UseGuards(AuthGuard)
+@UseGuards(GuardAuthAt)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -26,22 +34,32 @@ export class UserController {
   async getUser(@Param('userId') userId: number): Promise<User> {
     return await this.userService.getUser(userId);
   }
-   
+
   @Public()
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    const alreadyAdmin= await this.userService.findOne(createUserDto.email.toLowerCase().trim());
-    if(alreadyAdmin) 
-    throw new BadRequestException({ cause: new Error(), description: 'User already token.' });
+    const alreadyAdmin = await this.userService.findOne(
+      createUserDto.email.toLowerCase().trim(),
+    );
+    if (alreadyAdmin)
+      throw new BadRequestException({
+        cause: new Error(),
+        description: 'User already token.',
+      });
     return await this.userService.createAdmin(createUserDto);
   }
 
   @Roles(Role.Admin)
   @Post('createUser')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    const alreadyAdmin= await this.userService.findOne(createUserDto.email.toLowerCase().trim());
-    if(alreadyAdmin) 
-    throw new BadRequestException({ cause: new Error(), description: 'User already token.' });
+    const alreadyAdmin = await this.userService.findOne(
+      createUserDto.email.toLowerCase().trim(),
+    );
+    if (alreadyAdmin)
+      throw new BadRequestException({
+        cause: new Error(),
+        description: 'User already token.',
+      });
     return await this.userService.createUser(createUserDto);
   }
 }

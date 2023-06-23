@@ -8,31 +8,32 @@ export enum Role {
 @Entity()
 export class User {
   @PrimaryKey()
-     id!: number;
-
+  id!: number;
   @Property()
-   name: string;
+  name: string;
 
   @Property()
   @Unique()
   @IsEmail()
-   email: string;
+  email: string;
 
   @Property()
-   password: string;
-
+  password: string;
 
   @Property()
-   roles: Role[];
+  roles: Role[];
 
   @Property({ nullable: true })
-   profile_image?: string;
+  profile_image?: string;
 
   @Property()
-   createdAt = new Date();
+  createdAt = new Date();
 
   @Property({ onUpdate: () => new Date() })
-   updatedAt = new Date();
+  updatedAt = new Date();
+
+  @Property({ nullable: true })
+  refreshToken?: string;
 
   // constructor(
   //   name: string,
@@ -46,33 +47,34 @@ export class User {
   //   this.profile_image = profile_image;
   // }
 
- 
-
   public createAdmin(
     name: string,
     email: string,
     password: string,
-    profile_image: string)
-    {
-      this.name = name;
-      this.email = email;
-      this.password = password;
-      this.profile_image = profile_image;
-      this.roles=[Role.Admin,Role.User];
-      return this;
-    }
+    profile_image: string,
+  ) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.profile_image = profile_image;
+    this.roles = [Role.Admin, Role.User];
+    return this;
+  }
 
-    public createUser(
-      name: string,
-      email: string,
-      password: string,
-      profile_image: string)
-      {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.profile_image = profile_image;
-        this.roles=[Role.User];
-        return this;
-      }
+  public createUser(
+    name: string,
+    email: string,
+    password: string,
+    profile_image: string,
+  ) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.profile_image = profile_image;
+    this.roles = [Role.User];
+    return this;
+  }
+  public upateHasRefreshToken(refreshToken: string) {
+    this.refreshToken = refreshToken;
+  }
 }

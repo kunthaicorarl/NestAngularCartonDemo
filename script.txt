@@ -14,3 +14,6 @@ npx mikro-orm migration:down --to 0                           # migrate down all
 
 npx mikro-orm migration:fresh --seed              # seed the database with the default database seeder
 npx mikro-orm migration:fresh --seed=UsersSeeder  # seed the database with the UsersSeeder
+
+#random secret
+node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"

@@ -25,7 +25,7 @@ const config = {
     dropTables: true, // allow to disable table dropping
     safe: true, // allow to disable table and column dropping
     emit: 'ts', // migration generation mode
-  }
+  },
 } as Options;
 
 export default config;

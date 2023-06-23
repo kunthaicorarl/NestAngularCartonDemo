@@ -1,4 +1,4 @@
-import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 export const devConfig: PostgresConnectionOptions = {
   type: 'postgres',
   host: 'localhost',
@@ -6,6 +6,6 @@ export const devConfig: PostgresConnectionOptions = {
   username: 'postgres',
   password: 'Admin123',
   database: 'NestAngularCartonDemo',
-  entities: ["dist/**/*.entity{.ts,.js}"],
+  entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: true,
-}
+};
